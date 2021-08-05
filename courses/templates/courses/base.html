@@ -38,13 +38,24 @@
 
           <!--left-->
           <ul class="navbar-nav ml-auto">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/my-courses">My Courses</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
             
+            {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="#">Login</a>
+              <a class="nav-link" href="login">Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Signup</a>
+              <a class="nav-link" href="signup">Signup</a>
             </li>
+
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Log out</a>
             </li>
@@ -52,6 +63,10 @@
         </div>
       </nav>
     </div>
+
+    <!-- **************************************************************************** -->
+    
+    <!-- ****************************************************************************** -->
 
     {% block content %}
 

@@ -1,12 +1,17 @@
 from django.shortcuts import render
 from courses.models import Course
 from django.shortcuts import HttpResponse
+from django.views.generic import ListView
 
-def home(request):
-    courses = Course.objects.all()
-    # print(courses)
-    return render(request, template_name="courses/home.html", context={"courses":courses})
+# def home(request):
+#     courses = Course.objects.all()
+#     # print(courses)
+#     return render(request, template_name="courses/home.html", context={"courses":courses})
 
     
-    # return HttpResponse("Home Page")
+
+
+class HomePageView(ListView):
+    template_name = "courses/home.html"
+    queryset = Course.objects.all()
 
