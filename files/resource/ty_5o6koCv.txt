@@ -1,0 +1,23 @@
+from pytube import YouTube
+from win10toast import ToastNotifier
+
+def downloader():
+    try:
+        url = input("Give the URL of the YouTube video that you have to download : ")
+        yt = YouTube(url)
+        videos = yt.streams.all()
+        i = 1
+        for v in videos:
+            print(str(i) + "." + "  " + str(v))
+            i += 1
+        vdo_number = int(input("Enter the Number of video that you want to download : "))
+        video = videos[vdo_number - 1]
+        video.download('-- Your path here --')
+        print("Your video is Downloaded")
+        notify = ToastNotifier()
+        notify.show_toast("Your Video is downloaded", "Go and see it offline", duration=5)
+    
+    except Exception:
+        print("ERROR OCCURRED : \n\tMay be the URL you have provided is Invalid\n\tOr the video is not downloadable")
+
+downloader()

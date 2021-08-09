@@ -45,13 +45,49 @@ Login
 
                 {{course.name}}
             </p><hr>
+            {% if coupon %}
+
+            <p class="alert alert-light border">
+                Coupon Code Applied 
+                You Have Got {{coupon.discount}}% Discount 
+            </p>
+            <br>
+            <p class="display-5">
+
+                Payable Amount : <b>{% cal_sellprice course.price coupon.discount as value %} {{value|rupee}}</b>
+            </p> 
+
+            <a class="btn btn-light border" href="?action=create_payment&couponcode={{coupon.code}}">Continue to Payment</a>
+         
+            {% else %}
             <p class="display-5">
 
                 Payable Amount : <b>{% cal_sellprice course.price course.discount as value %} {{value|rupee}}</b>
-            </p> 
-            <a class="btn btn-light border" href="?action=create_payment">Continue to Payment</a>
-            
+            </p>
+
+           <a class="btn btn-light border" href="?action=create_payment">Continue to Payment</a>
+           {% endif %} 
+        </div><br>
+
+    <div class="border p-4 rounded border-success">
+        {% if coupon_code_message %}
+        <div class="alert alert-info">
+            {{coupon_code_message}}
         </div>
+        {% endif %}
+        <p>Coupon Code:</p>
+        <form action="" method="get">
+            <div class="col-lg-5 form-group">
+                <input type="text" name="couponcode" class="form-control" id="">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Apply" class="btn btn-primary">
+            </div>
+
+        </form>
+    </div>
+
+
     </div>
 
 </div>
@@ -63,7 +99,7 @@ Login
 var options = {
     "key": "rzp_test_PqR8MYbciOqF6T", // Enter the Key ID generated from the Dashboard
     
-    "name": "Code With Shilpa Yadav",
+    "name": "Payment With Shilpa Yadav",
     "description": "Payment for {{course.name}}",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQx5CdDw8hnni04X7ukbWGHN8q21HZqF2QLrg&usqp=CAU",
     "order_id": "{{order.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1

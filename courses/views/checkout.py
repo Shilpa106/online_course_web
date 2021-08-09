@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from courses.models import Course, Payment,UserCourse
+from courses.models import Course, Payment,UserCourse,CouponCode
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -17,19 +17,52 @@ def checkout(request,slug):
     
     user = request.user
     action = request.GET.get('action')
+    couponcode = request.GET.get('couponcode')
+    coupon_code_message = None
+    coupon = None
     order = None
     payment = None
     error = None
-    if action == 'create_payment':
-        try:
-            user_course = UserCourse.objects.get(user=user, course=course)
-            error = "You are already Enrolled in this Course"
 
+    try:
+        user_course = UserCourse.objects.get(user=user, course=course)
+        error = "You are already Enrolled in this Course"
+
+    except:
+        pass
+    
+    amount = None
+    if error is None:
+        amount = int((course.price - (course.price * course.discount * 0.01))*100)
+
+
+
+    if couponcode:
+        # print("fdfdsfsdf",couponcode)
+        try:
+            coupon = CouponCode.objects.get(course=course, code=couponcode)
+            amount = course.price - (course.price * coupon.discount*0.01)
+            amount = int(amount) * 100
+            # print("amount",amount)
+            # if coupon.discount == 100:
+            #     amount = 0;
         except:
-            pass
-        if error is None:
+            coupon_code_message = 'Invalid Coupon Code'
+            print('coupon code invalid')
+
+# if amount zero dont create payment only save enrollment object
+
+
+    if amount == 0:
+        userCourse = UserCourse(user = user, course = course)
+        userCourse.save()
+        return redirect('my-courses')
+      
+    if action == 'create_payment':
+        
+        
+               
             
-            amount = int((course.price - (course.price * course.discount * 0.01))*100)
             currency = "INR"
             notes={
                 "email" : user.email,
@@ -52,12 +85,17 @@ def checkout(request,slug):
             payment.save()
         # print("Creating Order Object")
         # order = "Order Created"
+
+    
+    
     context = {
     "course" : course,
     "order" : order,
     "payment" : payment,
     "user" : user,
-    "error" : error
+    "error" : error,
+    "coupon_code_message":coupon_code_message,
+    "coupon" : coupon
    
     }
     return render(request, template_name="courses/check_out.html", context=context)

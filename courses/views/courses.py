@@ -38,8 +38,19 @@ def coursePage(request,slug):
     # print(type(videos))
     # courses = Course.objects.all()
     # print(course,serial_number)
+    next_lecture = 2
+    prev_lecture = None;
     if serial_number is None:
         serial_number = 1
+    else:
+        next_lecture = int(serial_number)+1
+        if len(videos) < next_lecture:
+            next_lecture = None
+
+
+        prev_lecture = int(serial_number)-1
+        
+
 
     # video = Video.objects.filter(serial_number=serial_number, course=course)
     video = Video.objects.filter(serial_number=serial_number).filter(course=course).first()
@@ -69,7 +80,9 @@ def coursePage(request,slug):
 
     context = {
     "course" : course,
-    # "video" :video,
+    "video" :video,
+    "next_lecture" :next_lecture,
+    "prev_lecture" :prev_lecture,
     "videos":videos
     }
     return render(request, template_name="courses/course_page.html", context=context)

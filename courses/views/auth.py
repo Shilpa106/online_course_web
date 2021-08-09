@@ -19,9 +19,13 @@ class LoginView(FormView):
     template_name="courses/login.html"
     form_class = LoginForm
     success_url ='/'
+
     def form_valid(self, form):
-        print("Form is valid--------",form.cleaned_data)
+        # print("Form is valid--------",form.cleaned_data)
         login(self.request, form.cleaned_data)
+        next_page = self.request.GET.get('next')
+        if next_page is not None:
+            return redirect(next_page)
         return super().form_valid(form)
 
 
